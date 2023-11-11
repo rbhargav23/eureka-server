@@ -1,4 +1,4 @@
-package com.infybuzz.app;
+package com.altimetrik.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
