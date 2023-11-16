@@ -1,0 +1,50 @@
+version: '3.7'
+services:
+  eureka-server:
+    build: ../eureka-server
+    container_name: eurekaserver
+    image: bhargav/spring-cloud-gateway-eureka-server
+    ports:
+      - "8761:8761"
+  config-server:
+    build: ../../config-server/config-server
+    container_name: config-server
+    image: bhargav/spring-cloud-gateway-config-server
+    ports:
+      - "8888:8888"
+  address-service:
+    build: ../../address-service/address-service
+    container_name: address_service
+    image: bhargav/spring-cloud-gateway-address-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - config-server
+      - eureka-server
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka    
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+  student-service:
+    build: ../../student-service
+    container_name: student_service
+    image: bhargav/spring-cloud-gateway-student-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka      
+  api-gateway:
+    build: ../../api-gateway/api_gateway
+    container_name: api_gateway
+    image: bhargav/spring-cloud-gateway-service
+    ports:
+      - "9090:9090"
+    depends_on: 
+      - config-server
+      - eureka-server
+      - student-service
+      - address-service
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka    
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
