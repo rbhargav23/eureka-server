@@ -12,6 +12,8 @@ services:
     image: bhargav/spring-cloud-gateway-config-server
     ports:
       - "8888:8888"
+    depends_on:
+      - eureka-server
   address-service:
     build: ../../address-service/address-service
     container_name: address_service
