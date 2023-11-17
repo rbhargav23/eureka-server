@@ -1,5 +1,13 @@
 version: '3.7'
 services:
+  mysqldb:
+    container_name: mysqldb
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pbs@6199A
+      MYSQL_DATABASE: university
+    networks:
+      springboot-mysql-net:
   eureka-server:
     build: ../eureka-server
     container_name: eurekaserver
@@ -23,6 +31,9 @@ services:
     depends_on:
       - config-server
       - eureka-server
+      - mysqldb
+    networks:
+      springboot-mysql-net:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka    
       SPRING_CLOUD_CONFIG_URI: http://config-server:8888
@@ -34,6 +45,9 @@ services:
       - "8080:8080"
     depends_on:
       - eureka-server
+      - mysqldb
+    networks:
+      springboot-mysql-net:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka      
   api-gateway:
@@ -50,3 +64,5 @@ services:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka    
       SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+networks:
+  springboot-mysql-net:
