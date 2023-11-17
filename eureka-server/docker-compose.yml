@@ -6,8 +6,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: pbs@6199A
       MYSQL_DATABASE: university
-    networks:
-      springboot-mysql-net:
   eureka-server:
     build: ../eureka-server
     container_name: eurekaserver
@@ -24,7 +22,7 @@ services:
       - eureka-server
   address-service:
     build: ../../address-service/address-service
-    container_name: address_service
+    container_name: address-service
     image: bhargav/spring-cloud-gateway-address-service
     ports:
       - "8083:8083"
@@ -32,24 +30,18 @@ services:
       - config-server
       - eureka-server
       - mysqldb
-    networks:
-      springboot-mysql-net:
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka    
       SPRING_CLOUD_CONFIG_URI: http://config-server:8888
   student-service:
     build: ../../student-service
-    container_name: student_service
+    container_name: student-service
     image: bhargav/spring-cloud-gateway-student-service
     ports:
       - "8080:8080"
     depends_on:
       - eureka-server
       - mysqldb
-    networks:
-      springboot-mysql-net:
-    environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka      
   api-gateway:
     build: ../../api-gateway/api_gateway
     container_name: api_gateway
